@@ -13,7 +13,6 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
