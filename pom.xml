@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.HaolinZhong</groupId>
         <artifactId>brewery-bom</artifactId>
-        <version>6e86e7ccef</version>
+        <version>50bbc1255f</version>
     </parent>
 
     <groupId>hz.spring</groupId>
