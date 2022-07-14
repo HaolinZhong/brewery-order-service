@@ -1,7 +1,9 @@
 package hz.spring.breweryorderservice.web.model;
 
-import hz.spring.breweryorderservice.domain.BeerOrderStatusEnum;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.UUID;
 public class BeerOrderDTO extends BaseItem {
 
     @Builder
-    public BeerOrderDTO(UUID id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, UUID customerId, String customerRef, List<BeerOrderLineDTO> beerOrderLines, BeerOrderStatusEnum orderStatus, String orderStatusCallbackUrl) {
+    public BeerOrderDTO(UUID id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, UUID customerId, String customerRef, List<BeerOrderLineDTO> beerOrderLines, String orderStatus, String orderStatusCallbackUrl) {
         super(id, version, createdDate, lastModifiedDate);
         this.customerId = customerId;
         this.customerRef = customerRef;
@@ -25,6 +27,6 @@ public class BeerOrderDTO extends BaseItem {
     private UUID customerId;
     private String customerRef;
     private List<BeerOrderLineDTO> beerOrderLines;
-    private BeerOrderStatusEnum orderStatus;
+    private String orderStatus;
     private String orderStatusCallbackUrl;
 }
