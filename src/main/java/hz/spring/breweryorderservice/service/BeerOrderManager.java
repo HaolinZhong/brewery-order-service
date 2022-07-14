@@ -1,9 +1,10 @@
 package hz.spring.breweryorderservice.service;
 
 import hz.spring.breweryorderservice.domain.BeerOrder;
-import hz.spring.breweryorderservice.domain.BeerOrderEventEnum;
+
+import java.util.UUID;
 
 public interface BeerOrderManager {
     BeerOrder newBeerOrder(BeerOrder beerOrder);
-    void sendBeerOrderEvent(BeerOrder beerOrder, BeerOrderEventEnum eventEnum);
+    void processValidationResult(UUID beerOrderId, Boolean isValid);
 }
