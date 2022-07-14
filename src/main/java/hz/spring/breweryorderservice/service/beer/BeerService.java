@@ -1,6 +1,6 @@
 package hz.spring.breweryorderservice.service.beer;
 
-import hz.spring.breweryorderservice.web.model.BeerDTO;
+import hz.spring.common.model.BeerDTO;
 
 import java.util.Optional;
 import java.util.UUID;

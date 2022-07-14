@@ -2,11 +2,10 @@ package hz.spring.breweryorderservice.web.mappers;
 
 import hz.spring.breweryorderservice.domain.BeerOrderLine;
 import hz.spring.breweryorderservice.service.beer.BeerService;
-import hz.spring.breweryorderservice.web.model.BeerDTO;
-import hz.spring.breweryorderservice.web.model.BeerOrderLineDTO;
+import hz.spring.common.model.BeerDTO;
+import hz.spring.common.model.BeerOrderLineDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package hz.spring.breweryorderservice.web.model;
+package hz.spring.common.model;
 
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

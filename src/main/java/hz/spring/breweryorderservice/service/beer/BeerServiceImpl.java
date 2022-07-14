@@ -1,6 +1,6 @@
 package hz.spring.breweryorderservice.service.beer;
 
-import hz.spring.breweryorderservice.web.model.BeerDTO;
+import hz.spring.common.model.BeerDTO;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;

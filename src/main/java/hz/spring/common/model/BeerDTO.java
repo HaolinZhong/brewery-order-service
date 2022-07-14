@@ -1,4 +1,4 @@
-package hz.spring.breweryorderservice.web.model;
+package hz.spring.common.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;

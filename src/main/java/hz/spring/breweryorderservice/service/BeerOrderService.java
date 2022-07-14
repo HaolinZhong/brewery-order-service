@@ -1,7 +1,7 @@
 package hz.spring.breweryorderservice.service;
 
-import hz.spring.breweryorderservice.web.model.BeerOrderDTO;
-import hz.spring.breweryorderservice.web.model.BeerOrderPagedList;
+import hz.spring.common.model.BeerOrderDTO;
+import hz.spring.common.model.BeerOrderPagedList;
 import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;

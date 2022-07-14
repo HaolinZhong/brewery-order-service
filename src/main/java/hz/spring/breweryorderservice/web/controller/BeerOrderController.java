@@ -1,8 +1,8 @@
 package hz.spring.breweryorderservice.web.controller;
 
 import hz.spring.breweryorderservice.service.BeerOrderService;
-import hz.spring.breweryorderservice.web.model.BeerOrderDTO;
-import hz.spring.breweryorderservice.web.model.BeerOrderPagedList;
+import hz.spring.common.model.BeerOrderDTO;
+import hz.spring.common.model.BeerOrderPagedList;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
