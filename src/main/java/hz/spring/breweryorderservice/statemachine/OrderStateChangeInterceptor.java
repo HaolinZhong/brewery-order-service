@@ -1,9 +1,10 @@
-package hz.spring.breweryorderservice.service;
+package hz.spring.breweryorderservice.statemachine;
 
 import hz.spring.breweryorderservice.domain.BeerOrder;
 import hz.spring.breweryorderservice.domain.BeerOrderEventEnum;
 import hz.spring.breweryorderservice.domain.BeerOrderStatusEnum;
 import hz.spring.breweryorderservice.repository.BeerOrderRepository;
+import hz.spring.breweryorderservice.service.BeerOrderManagerImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;

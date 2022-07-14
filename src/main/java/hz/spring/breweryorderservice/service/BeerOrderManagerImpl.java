@@ -4,6 +4,7 @@ import hz.spring.breweryorderservice.domain.BeerOrder;
 import hz.spring.breweryorderservice.domain.BeerOrderEventEnum;
 import hz.spring.breweryorderservice.domain.BeerOrderStatusEnum;
 import hz.spring.breweryorderservice.repository.BeerOrderRepository;
+import hz.spring.breweryorderservice.statemachine.OrderStateChangeInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BeerOrderManagerImpl implements BeerOrderManager{
 
-    static final String ORDER_ID_HEADER = "ORDER_ID";
+    public static final String ORDER_ID_HEADER = "ORDER_ID";
 
     private final StateMachineFactory<BeerOrderStatusEnum, BeerOrderEventEnum> stateMachineFactory;
     private final BeerOrderRepository beerOrderRepository;
