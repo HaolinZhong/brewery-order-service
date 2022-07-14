@@ -1,4 +1,4 @@
-package hz.spring.breweryorderservice.statemachine.listener;
+package hz.spring.breweryorderservice.service.listener;
 
 import hz.spring.breweryorderservice.config.JmsConfig;
 import hz.spring.breweryorderservice.repository.BeerOrderRepository;

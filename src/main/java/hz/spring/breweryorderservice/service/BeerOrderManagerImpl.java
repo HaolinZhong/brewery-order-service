@@ -5,6 +5,7 @@ import hz.spring.breweryorderservice.domain.BeerOrderEventEnum;
 import hz.spring.breweryorderservice.domain.BeerOrderStatusEnum;
 import hz.spring.breweryorderservice.repository.BeerOrderRepository;
 import hz.spring.breweryorderservice.statemachine.OrderStateChangeInterceptor;
+import hz.spring.common.model.BeerOrderDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -51,6 +52,43 @@ public class BeerOrderManagerImpl implements BeerOrderManager{
         }
 
     }
+
+
+    @Override
+    public void beerOrderAllocationPassed(BeerOrderDTO beerOrderDTO) {
+        BeerOrder beerOrder = beerOrderRepository.getReferenceById(beerOrderDTO.getId());
+        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
+        updateAllocatedQty(beerOrderDTO, beerOrder);
+    }
+
+    @Override
+    public void beerOrderAllocationPendingInventory(BeerOrderDTO beerOrderDTO) {
+        BeerOrder beerOrder = beerOrderRepository.getReferenceById(beerOrderDTO.getId());
+        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
+        updateAllocatedQty(beerOrderDTO, beerOrder);
+    }
+
+    @Override
+    public void beerOrderAllocationFailed(BeerOrderDTO beerOrderDTO) {
+        BeerOrder beerOrder = beerOrderRepository.getReferenceById(beerOrderDTO.getId());
+        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_FAILED);
+    }
+
+    private void updateAllocatedQty(BeerOrderDTO beerOrderDTO, BeerOrder beerOrder) {
+        BeerOrder allocatedOrder = beerOrderRepository.getReferenceById(beerOrderDTO.getId());
+
+        allocatedOrder.getBeerOrderLines().forEach(line -> {
+            beerOrderDTO.getBeerOrderLines().forEach(lineDTO -> {
+                if (line.getId().equals(lineDTO.getId())) {
+                    line.setQuantityAllocated(lineDTO.getQuantityAllocated());
+                }
+            });
+        });
+
+        beerOrderRepository.saveAndFlush(beerOrder);
+    }
+
+
 
      public void sendBeerOrderEvent(BeerOrder beerOrder, BeerOrderEventEnum eventEnum) {
         StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = build(beerOrder);
