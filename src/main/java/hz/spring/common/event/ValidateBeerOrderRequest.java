@@ -6,15 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ValidateBeerOrderRequest implements Serializable {
-
-    static final long serialVersionUID = 6450686537486433530L;
+public class ValidateBeerOrderRequest {
 
     private BeerOrderDTO beerOrderDTO;
 }

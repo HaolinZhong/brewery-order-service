@@ -92,7 +92,7 @@ public class BeerOrderServiceImpl implements BeerOrderService {
         BeerOrder beerOrder = getOrder(customerId, orderId);
         beerOrder.setOrderStatus(BeerOrderStatusEnum.PICKED_UP);
 
-        beerOrderRepository.save(beerOrder);
+        beerOrderRepository.saveAndFlush(beerOrder);
     }
 
     private BeerOrder getOrder(UUID customerId, UUID orderId) {
