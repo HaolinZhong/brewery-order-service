@@ -61,7 +61,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                     if (isValid) {
                         sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_PASSED);
 
-//                        awaitForStatus(beerOrderId, BeerOrderStatusEnum.VALIDATED);
+                        awaitForStatus(beerOrderId, BeerOrderStatusEnum.VALIDATED);
 
                         BeerOrder validatedOrder = beerOrderRepository.findById(beerOrderId).get();
 
@@ -116,9 +116,10 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                     }
                 });
             });
+            beerOrderRepository.saveAndFlush(allocatedOrder);
         }, () -> log.error("Order not found in update allocated qty. Id : " + beerOrderDTO.getId()));
 
-        beerOrderRepository.saveAndFlush(beerOrder);
+
     }
 
     private void awaitForStatus(UUID beerOrderId, BeerOrderStatusEnum statusEnum) {
@@ -132,7 +133,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                 log.debug("Loop Retries exceeded");
             }
 
-            Optional.of(beerOrderRepository.getReferenceById(beerOrderId)).ifPresentOrElse(beerOrder -> {
+            Optional.of(beerOrderRepository.getOne(beerOrderId)).ifPresentOrElse(beerOrder -> {
                 if (beerOrder.getOrderStatus().equals(statusEnum)) {
                     found.set(true);
                     log.debug("Order Found");
@@ -175,8 +176,9 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         sm.getStateMachineAccessor()
                 .doWithAllRegions(sma -> {
                     sma.addStateMachineInterceptor(orderStateChangeInterceptor);
-                    sma.resetStateMachineReactively(new DefaultStateMachineContext<>(beerOrder.getOrderStatus(), null, null, null));
+                    sma.resetStateMachine(new DefaultStateMachineContext<>(beerOrder.getOrderStatus(), null, null, null));
                 });
+
 
         sm.start();
 
