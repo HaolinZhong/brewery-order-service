@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import hz.spring.breweryorderservice.config.JmsConfig;
 import hz.spring.breweryorderservice.domain.BeerOrder;
 import hz.spring.breweryorderservice.domain.BeerOrderLine;
 import hz.spring.breweryorderservice.domain.BeerOrderStatusEnum;
@@ -11,6 +12,7 @@ import hz.spring.breweryorderservice.domain.Customer;
 import hz.spring.breweryorderservice.repository.BeerOrderRepository;
 import hz.spring.breweryorderservice.repository.CustomerRepository;
 import hz.spring.breweryorderservice.service.beer.BeerServiceImpl;
+import hz.spring.common.event.AllocationFailureEvent;
 import hz.spring.common.model.BeerDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jms.core.JmsTemplate;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,6 +52,9 @@ class BeerOrderManagerImplIT {
 
     @Autowired
     WireMockServer wireMockServer;
+
+    @Autowired
+    JmsTemplate jmsTemplate;
 
     Customer testCustomer;
 
@@ -139,6 +145,11 @@ class BeerOrderManagerImplIT {
             BeerOrder foundOrder = beerOrderRepository.findById(beerOrder.getId()).get();
             assertEquals(BeerOrderStatusEnum.ALLOCATION_EXCEPTION, foundOrder.getOrderStatus());
         });
+
+        AllocationFailureEvent failureEvent = (AllocationFailureEvent) jmsTemplate.receiveAndConvert(JmsConfig.ALLOCATE_FAILURE_QUEUE);
+
+        assertNotNull(failureEvent);
+        assertEquals(failureEvent.getOrderId(), savedBeerOrder.getId());
     }
 
     @Test
@@ -157,6 +168,10 @@ class BeerOrderManagerImplIT {
             BeerOrder foundOrder = beerOrderRepository.findById(beerOrder.getId()).get();
             assertEquals(BeerOrderStatusEnum.PENDING_INVENTORY, foundOrder.getOrderStatus());
         });
+    }
+
+    @Test
+    void name() {
     }
 
     @Test
