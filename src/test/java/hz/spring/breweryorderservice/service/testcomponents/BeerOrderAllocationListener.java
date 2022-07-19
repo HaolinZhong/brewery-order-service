@@ -23,18 +23,25 @@ public class BeerOrderAllocationListener {
 
         boolean hasError = false;
         boolean isPending = false;
+        boolean sendResponse = true;
 
         AllocateBeerOrderRequest request = (AllocateBeerOrderRequest) msg.getPayload();
 
-        if (request.getBeerOrderDTO().getCustomerRef() != null &&
-                request.getBeerOrderDTO().getCustomerRef().equals("failed-allocation")) {
-            hasError = true;
+        if (request.getBeerOrderDTO().getCustomerRef() != null) {
+            if (request.getBeerOrderDTO().getCustomerRef().equals("failed-allocation")) {
+                hasError = true;
+            }
+
+            if (request.getBeerOrderDTO().getCustomerRef().equals("partial-allocation")) {
+                isPending = true;
+            }
+
+            if (request.getBeerOrderDTO().getCustomerRef().equals("dont-allocate")) {
+                sendResponse = false;
+            }
         }
 
-        if (request.getBeerOrderDTO().getCustomerRef() != null &&
-                request.getBeerOrderDTO().getCustomerRef().equals("partial-allocation")) {
-            isPending = true;
-        }
+
 
         boolean isPendingFinal = isPending;
 
@@ -46,12 +53,15 @@ public class BeerOrderAllocationListener {
             }
         });
 
+        if (sendResponse) {
+            jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE,
+                    AllocateBeerOrderResult.builder()
+                            .beerOrderDTO(request.getBeerOrderDTO())
+                            .pendingInventory(isPending)
+                            .allocationError(hasError)
+                            .build());
+        }
 
-        jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE,
-                AllocateBeerOrderResult.builder()
-                        .beerOrderDTO(request.getBeerOrderDTO())
-                        .pendingInventory(isPending)
-                        .allocationError(hasError)
-                        .build());
+
     }
 }

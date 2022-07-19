@@ -21,19 +21,29 @@ public class BeerOrderValidationListener {
     public void listen(Message msg) {
 
         boolean isValid = true;
+        boolean sendResponse = true;
 
         ValidateBeerOrderRequest request = (ValidateBeerOrderRequest) msg.getPayload();
 
-        if (request.getBeerOrderDTO().getCustomerRef() != null &&
-                request.getBeerOrderDTO().getCustomerRef().equals("fail-validation")) {
-            isValid = false;
+        if (request.getBeerOrderDTO().getCustomerRef() != null) {
+
+            if (request.getBeerOrderDTO().getCustomerRef().equals("fail-validation")) {
+                isValid = false;
+
+            } else if (request.getBeerOrderDTO().getCustomerRef().equals("dont-validate")) {
+                sendResponse = false;
+            }
         }
 
-        jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_RESPONSE_QUEUE,
-                ValidateBeerOrderResult.builder()
-                .isValid(isValid)
-                .orderId(request.getBeerOrderDTO().getId())
-                .build());
+
+
+        if (sendResponse) {
+            jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_RESPONSE_QUEUE,
+                    ValidateBeerOrderResult.builder()
+                            .isValid(isValid)
+                            .orderId(request.getBeerOrderDTO().getId())
+                            .build());
+        }
 
     }
 

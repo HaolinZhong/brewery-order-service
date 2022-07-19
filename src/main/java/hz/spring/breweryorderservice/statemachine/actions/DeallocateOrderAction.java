@@ -1,19 +1,51 @@
 package hz.spring.breweryorderservice.statemachine.actions;
 
+import hz.spring.breweryorderservice.config.JmsConfig;
+import hz.spring.breweryorderservice.domain.BeerOrder;
 import hz.spring.breweryorderservice.domain.BeerOrderEventEnum;
 import hz.spring.breweryorderservice.domain.BeerOrderStatusEnum;
+import hz.spring.breweryorderservice.repository.BeerOrderRepository;
+import hz.spring.breweryorderservice.service.BeerOrderManagerImpl;
+import hz.spring.breweryorderservice.web.mappers.BeerOrderMapper;
+import hz.spring.common.event.DeallocateOrderRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class DeallocateOrderAction implements Action<BeerOrderStatusEnum, BeerOrderEventEnum> {
+
+    private final BeerOrderRepository beerOrderRepository;
+    private final BeerOrderMapper beerOrderMapper;
+    private final JmsTemplate jmsTemplate;
+
     @Override
     public void execute(StateContext<BeerOrderStatusEnum, BeerOrderEventEnum> stateContext) {
+
+        String beerOrderId = (String) stateContext.getMessage().getHeaders().get(BeerOrderManagerImpl.ORDER_ID_HEADER);
+
+        Optional<BeerOrder> beerOrderOptional = beerOrderRepository.findById(UUID.fromString(beerOrderId));
+
+        beerOrderOptional.ifPresentOrElse(beerOrder -> {
+            DeallocateOrderRequest request = DeallocateOrderRequest.builder()
+                    .beerOrderDTO(beerOrderMapper.BeerOrderToDTO(beerOrder))
+                    .build();
+
+            jmsTemplate.convertAndSend(JmsConfig.DEALLOCATE_ORDER_QUEUE, request);
+
+            log.debug("Send Deallocation Request for order id :" + beerOrderId);
+
+        }, () -> {
+            log.debug("Order Not Found. Id :" + beerOrderId);
+        });
 
     }
 }
