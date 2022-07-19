@@ -8,6 +8,7 @@ import hz.spring.breweryorderservice.repository.CustomerRepository;
 import hz.spring.breweryorderservice.web.mappers.BeerOrderMapper;
 import hz.spring.common.model.BeerOrderDTO;
 import hz.spring.common.model.BeerOrderPagedList;
+import hz.spring.common.model.CustomerDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,7 +32,6 @@ public class BeerOrderServiceImpl implements BeerOrderService {
     private final CustomerRepository customerRepository;
     private final BeerOrderMapper beerOrderMapper;
     private final BeerOrderManager beerOrderManager;
-
 
     @Override
     public BeerOrderPagedList listOrders(UUID customerId, Pageable pageable) {
@@ -82,6 +84,14 @@ public class BeerOrderServiceImpl implements BeerOrderService {
     @Override
     public void pickupOrder(UUID customerId, UUID orderId) {
         beerOrderManager.beerOrderPickedUp(orderId);
+    }
+
+    @Override
+    public List<CustomerDTO> listCustomers() {
+        List<Customer> customers = customerRepository.findAll();
+        List<CustomerDTO> customerDTOS = new ArrayList<>();
+
+        return null;
     }
 
     private BeerOrder getOrder(UUID customerId, UUID orderId) {
