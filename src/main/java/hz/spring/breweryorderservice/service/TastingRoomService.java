@@ -7,6 +7,7 @@ import hz.spring.breweryorderservice.repository.CustomerRepository;
 import hz.spring.common.model.BeerOrderDTO;
 import hz.spring.common.model.BeerOrderLineDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,7 @@ public class TastingRoomService {
     }
 
     @Transactional
-    // @Scheduled(fixedRate = 2000) //run every 2 seconds
+    @Scheduled(fixedRate = 2000) //run every 2 seconds
     public void placeTastingRoomOrder(){
 
         List<Customer> customerList = customerRepository.findAllByCustomerNameLike(DataLoader.TASTING_ROOM);
